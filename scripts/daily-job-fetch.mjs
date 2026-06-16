@@ -19,7 +19,7 @@ async function fetchJobsFromAPI(query, location) {
   // Simplify the location string (take only the first part if separated by commas to avoid confusing the API)
   const primaryLocation = location.split(',')[0].trim();
   const searchString = `${query} in ${primaryLocation}`;
-  const url = `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(searchString)}&date_posted=today&num_pages=1`;
+  const url = `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(searchString)}&date_posted=week&num_pages=1`;
   const options = {
     method: 'GET',
     headers: {
@@ -29,8 +29,14 @@ async function fetchJobsFromAPI(query, location) {
   };
 
   try {
+    console.log(`Calling JSearch API with query: "${searchString}"`);
     const response = await fetch(url, options);
     const result = await response.json();
+    
+    if (result.message) {
+       console.error("API returned a message:", result.message);
+    }
+    
     return result.data || [];
   } catch (error) {
     console.error("RapidAPI Fetch Error:", error);
