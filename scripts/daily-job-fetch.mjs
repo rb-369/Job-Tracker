@@ -2,16 +2,17 @@ import { createClient } from '@supabase/supabase-js';
 import sgMail from '@sendgrid/mail';
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !SENDGRID_API_KEY || !RAPIDAPI_KEY) {
+if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !SENDGRID_API_KEY || !RAPIDAPI_KEY) {
   console.error("Missing required environment variables.");
   process.exit(1);
 }
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Use Service Role Key to bypass RLS
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 sgMail.setApiKey(SENDGRID_API_KEY);
 
 async function fetchJobsFromAPI(query, location) {
