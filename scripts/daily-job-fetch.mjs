@@ -16,7 +16,10 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 sgMail.setApiKey(SENDGRID_API_KEY);
 
 async function fetchJobsFromAPI(query, location) {
-  const url = `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(query + ' in ' + location)}&date_posted=today&num_pages=1`;
+  // Simplify the location string (take only the first part if separated by commas to avoid confusing the API)
+  const primaryLocation = location.split(',')[0].trim();
+  const searchString = `${query} in ${primaryLocation}`;
+  const url = `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(searchString)}&date_posted=today&num_pages=1`;
   const options = {
     method: 'GET',
     headers: {
